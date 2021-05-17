@@ -1,0 +1,79 @@
+*{
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+a, a:visited{
+    text-decoration: none;
+    color: white;
+}
+.containerAll{
+    width: 100%;
+	margin: auto;
+    background-color: #181818;
+
+}
+
+header{
+    background-color: #202020;
+    padding: 20px;
+    height: 180px;
+    clip-path: polygon(0 0, 100% 0, 100% 40%, 0% 100%);
+    display: flex;
+} 
+
+.logo{
+    width: 30%;
+    min-width: 500px;
+}
+
+img{
+    width: 100%;
+}
+
+.headerBottom{
+    width: 70%;
+}
+.code{
+    background-color: #373737;
+    padding: 5px 30px;
+    color: white;
+    
+    font-family: 'console'; 
+    float: right;
+}
+
+.code:active{
+    background-color: #606060;
+}
+
+.mainText{
+    text-align: center;
+    color: #e7e7e7;
+    padding: 10px 0px 55px 0px;
+    
+}
+
+.mainText h4, .mainText p{
+    text-decoration: none;
+    font-size: 40px;
+    font-family: Arial;
+}
+
+.line{
+    height: 3px;
+    width: 100%;
+    background-color: #373737;
+}
+
+.configuration{
+    width: 30%;
+    height: 1000px;
+    background-color: #0f0f0f;
+}
+
+@font-face {
+    font-family: 'console';
+    src: url(../fonts/Minecraft.ttf);
+}
