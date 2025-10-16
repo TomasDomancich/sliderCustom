@@ -27,6 +27,8 @@ a:visited {
     src: url('../fonts/Minecraft.ttf');
 }
 
+/* Nota: La fuente 'console' solo se usa en el botón de código */
+
 /* ========================================
    HEADER
 ========================================= */
@@ -58,6 +60,7 @@ header {
     border: none;
     cursor: pointer;
     font-size: 14px;
+    font-family: 'console', monospace; /* Fuente Minecraft solo aquí */
     transition: background-color 0.3s;
 }
 
