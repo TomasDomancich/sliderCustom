@@ -1,79 +1,300 @@
-*{
-	margin: 0px;
-	padding: 0px;
-	box-sizing: border-box;
+/* ========================================
+   RESET Y CONFIGURACIÓN GLOBAL
+========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-a, a:visited{
+body {
+    font-family: Arial, sans-serif;
+    background-color: #181818;
+    color: #e7e7e7;
+}
+
+a, 
+a:visited {
     text-decoration: none;
     color: white;
 }
-.containerAll{
-    width: 100%;
-	margin: auto;
-    background-color: #181818;
 
+/* ========================================
+   FUENTE PERSONALIZADA
+========================================= */
+@font-face {
+    font-family: 'console';
+    src: url('../fonts/Minecraft.ttf');
 }
 
-header{
+/* ========================================
+   HEADER
+========================================= */
+header {
     background-color: #202020;
     padding: 20px;
     height: 180px;
     clip-path: polygon(0 0, 100% 0, 100% 40%, 0% 100%);
     display: flex;
-} 
-
-.logo{
-    width: 30%;
-    min-width: 500px;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
-img{
-    width: 100%;
-}
-
-.headerBottom{
-    width: 70%;
-}
-.code{
-    background-color: #373737;
-    padding: 5px 30px;
+.logo {
+    font-size: 48px;
+    font-weight: 300;
     color: white;
-    
-    font-family: 'console'; 
-    float: right;
+    letter-spacing: 2px;
 }
 
-.code:active{
+.logo span:first-child {
+    color: #5a9e9e;
+}
+
+.codeBtn {
+    background-color: #373737;
+    padding: 8px 30px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.codeBtn:hover {
+    background-color: #505050;
+}
+
+.codeBtn:active {
     background-color: #606060;
 }
 
-.mainText{
+/* ========================================
+   SECCIÓN DE TEXTO PRINCIPAL
+========================================= */
+.mainText {
     text-align: center;
-    color: #e7e7e7;
-    padding: 10px 0px 55px 0px;
-    
+    padding: 40px 20px 60px;
 }
 
-.mainText h4, .mainText p{
-    text-decoration: none;
-    font-size: 40px;
-    font-family: Arial;
+.mainText h4 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    font-weight: normal;
 }
 
-.line{
+.mainText p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #b0b0b0;
+}
+
+/* ========================================
+   LÍNEA DIVISORA
+========================================= */
+.line {
     height: 3px;
-    width: 100%;
     background-color: #373737;
+    margin-bottom: 0;
 }
 
-.configuration{
-    width: 30%;
-    height: 1000px;
+/* ========================================
+   LAYOUT DE CONFIGURACIÓN
+========================================= */
+.configContainer {
+    display: flex;
+    min-height: calc(100vh - 180px - 200px);
+}
+
+/* ========================================
+   SIDEBAR
+========================================= */
+.sidebar {
+    width: 250px;
     background-color: #0f0f0f;
+    padding: 30px 0;
 }
 
-@font-face {
-    font-family: 'console';
-    src: url(../fonts/Minecraft.ttf);
+.sidebarTitle {
+    color: #888;
+    font-size: 14px;
+    letter-spacing: 2px;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebarMenu {
+    list-style: none;
+}
+
+.sidebarMenu li {
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-left: 3px solid transparent;
+}
+
+.sidebarMenu li:hover {
+    background-color: #1a1a1a;
+}
+
+.sidebarMenu li.active {
+    background-color: #252525;
+    border-left-color: #5a9e9e;
+}
+
+/* ========================================
+   ÁREA DE CONTENIDO PRINCIPAL
+========================================= */
+.contentArea {
+    flex: 1;
+    padding: 40px 60px;
+    background-color: #181818;
+}
+
+.contentSection {
+    display: none;
+}
+
+.contentSection.active {
+    display: block;
+}
+
+.sectionTitle {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: normal;
+}
+
+/* ========================================
+   INPUT DE NÚMERO DE FOTOS
+========================================= */
+.numberInputGroup {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.numberInputGroup label {
+    font-size: 16px;
+}
+
+.numberInputGroup input {
+    width: 60px;
+    padding: 8px;
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+}
+
+.numberInputGroup button {
+    width: 30px;
+    height: 30px;
+    background-color: #373737;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.numberInputGroup button:hover {
+    background-color: #4a4a4a;
+}
+
+/* ========================================
+   GRID DE IMÁGENES
+========================================= */
+.imageGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.imageUploadBox {
+    aspect-ratio: 16/9;
+    background-color: #2a2a2a;
+    border: 2px dashed #3a3a3a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.imageUploadBox:hover {
+    background-color: #323232;
+    border-color: #4a4a4a;
+}
+
+.imageUploadBox.hasImage {
+    border-style: solid;
+    border-color: #5a9e9e;
+}
+
+.imageUploadBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.uploadIcon {
+    font-size: 48px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.uploadText {
+    color: #777;
+    font-size: 14px;
+}
+
+/* ========================================
+   BOTÓN AGREGAR MÁS
+========================================= */
+.addMoreBtn {
+    width: 80px;
+    height: 80px;
+    background-color: #2a2a2a;
+    border: 2px solid #3a3a3a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 20px auto;
+}
+
+.addMoreBtn:hover {
+    background-color: #323232;
+    border-color: #5a9e9e;
+}
+
+.addMoreBtn span {
+    font-size: 36px;
+    color: #666;
+}
+
+/* ========================================
+   INPUT DE ARCHIVO (OCULTO)
+========================================= */
+input[type="file"] {
+    display: none;
+}
+
+/* ========================================
+   CONTENIDO PLACEHOLDER
+========================================= */
+.placeholderContent {
+    padding: 40px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
 }
