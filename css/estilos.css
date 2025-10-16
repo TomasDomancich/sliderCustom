@@ -55,13 +55,14 @@ header {
 
 .codeBtn {
     background-color: #373737;
-    padding: 8px 30px;
+    padding: 10px 35px;
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px; /* Aumentado de 14px a 16px */
     font-family: 'console', monospace; /* Fuente Minecraft solo aquí */
     transition: background-color 0.3s;
+    letter-spacing: 1px; /* Espaciado para mejor legibilidad */
 }
 
 .codeBtn:hover {
