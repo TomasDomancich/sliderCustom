@@ -3,20 +3,48 @@
 // ========================================
 const estado = {
     cantidadFotos: 5,
-    imagenes: []
+    imagenes: [],
+    // Configuración de estilos
+    estilos: {
+        tipoTransicion: 'fade',
+        velocidadTransicion: 800,
+        colorFondo: '#000000',
+        autoplay: true,
+        intervaloAutoplay: 3000,
+        mostrarFlechas: true,
+        mostrarDots: true
+    }
 };
 
 // ========================================
 // REFERENCIAS A ELEMENTOS DEL DOM
 // ========================================
 const elementos = {
+    // Elementos de la sección Images
     inputCantidadFotos: document.getElementById('cantidadFotos'),
     gridImagenes: document.getElementById('gridImagenes'),
     btnDecrementar: document.getElementById('decrementarBtn'),
     btnIncrementar: document.getElementById('incrementarBtn'),
     btnAgregarMas: document.getElementById('agregarMasBtn'),
     itemsSidebar: document.querySelectorAll('.sidebarMenu li'),
-    seccionesContenido: document.querySelectorAll('.contentSection')
+    seccionesContenido: document.querySelectorAll('.contentSection'),
+    
+    // Overlay de drag and drop
+    contentArea: document.getElementById('contentArea'),
+    dropOverlay: document.getElementById('dropOverlay'),
+    
+    // Elementos de la sección Style
+    radiosTipoTransicion: document.querySelectorAll('input[name="tipoTransicion"]'),
+    sliderVelocidad: document.getElementById('velocidadTransicion'),
+    labelVelocidad: document.getElementById('velocidadValor'),
+    inputColorFondo: document.getElementById('colorFondo'),
+    inputColorHex: document.getElementById('colorFondoHex'),
+    checkboxAutoplay: document.getElementById('autoplay'),
+    grupoIntervalo: document.getElementById('grupoIntervalo'),
+    sliderIntervalo: document.getElementById('intervaloAutoplay'),
+    labelIntervalo: document.getElementById('intervaloValor'),
+    checkboxFlechas: document.getElementById('mostrarFlechas'),
+    checkboxDots: document.getElementById('mostrarDots')
 };
 
 // ========================================
@@ -249,10 +277,19 @@ function manejarDropArchivo(evento, caja, indice) {
     evento.preventDefault();
     caja.style.backgroundColor = '';
     
-    const archivo = evento.dataTransfer.files[0];
-    if (archivo && archivo.type.startsWith('image/')) {
-        cargarImagen(archivo, indice);
+    const archivos = Array.from(evento.dataTransfer.files);
+    const archivosImagen = archivos.filter(archivo => archivo.type.startsWith('image/'));
+    
+    if (archivosImagen.length === 0) return;
+    
+    // Si solo hay un archivo, cargarlo en la posición actual
+    if (archivosImagen.length === 1) {
+        cargarImagen(archivosImagen[0], indice);
+        return;
     }
+    
+    // Si hay múltiples archivos, cargarlos secuencialmente
+    cargarMultiplesImagenes(archivosImagen, indice);
 }
 
 /**
@@ -271,6 +308,87 @@ function cargarImagen(archivo, indice) {
     lector.readAsDataURL(archivo);
 }
 
+/**
+ * Carga múltiples imágenes secuencialmente desde un índice inicial
+ * 
+ * COMPORTAMIENTO:
+ * 1. Calcula cuántos slots necesita (indiceInicial + cantidad de archivos)
+ * 2. Expande automáticamente los slots si es necesario (máximo 10)
+ * 3. Carga todas las imágenes de forma asíncrona
+ * 4. Renderiza el grid UNA SOLA VEZ cuando todas las imágenes terminan de cargar
+ * 
+ * EJEMPLO:
+ * - Estado actual: 5 slots, todos vacíos
+ * - Usuario suelta 8 imágenes
+ * - indiceInicial = 0 (primer slot vacío)
+ * - Sistema expande a 8 slots automáticamente
+ * - Carga las 8 imágenes en paralelo
+ * - Renderiza una vez al final
+ * 
+ * @param {File[]} archivos - Array de archivos de imagen a cargar
+ * @param {number} indiceInicial - El índice desde donde empezar a cargar (generalmente el primer slot vacío)
+ */
+function cargarMultiplesImagenes(archivos, indiceInicial) {
+    // ============================================
+    // PASO 1: Calcular espacio necesario
+    // ============================================
+    const totalNecesario = indiceInicial + archivos.length;
+    
+    // ============================================
+    // PASO 2: Expandir slots si es necesario
+    // ============================================
+    // Si necesitamos más slots que los actuales, expandir
+    // Límite máximo: 10 slots
+    if (totalNecesario > estado.cantidadFotos) {
+        estado.cantidadFotos = Math.min(totalNecesario, 10);
+        actualizarInputCantidad();
+    }
+    
+    // ============================================
+    // PASO 3: Cargar todas las imágenes
+    // ============================================
+    // Usamos FileReader.readAsDataURL() que es asíncrono
+    // Contador para saber cuándo terminaron todas las cargas
+    let archivosRestantes = 0;
+    
+    archivos.forEach((archivo, offset) => {
+        const indiceDestino = indiceInicial + offset;
+        
+        // Solo cargar si está dentro del límite de 10 slots
+        if (indiceDestino < 10) {
+            archivosRestantes++;
+            const lector = new FileReader();
+            
+            // Callback cuando termina de leer el archivo
+            lector.onload = (evento) => {
+                // Guardar la imagen en base64 en el estado
+                estado.imagenes[indiceDestino] = evento.target.result;
+                archivosRestantes--;
+                
+                // ============================================
+                // PASO 4: Renderizar solo cuando TODO terminó
+                // ============================================
+                // Esto evita múltiples re-renderizados y mejora el performance
+                if (archivosRestantes === 0) {
+                    renderizarGridImagenes();
+                }
+            };
+            
+            // Iniciar lectura del archivo como Data URL (base64)
+            lector.readAsDataURL(archivo);
+        }
+    });
+    
+    // ============================================
+    // CASO EDGE: No hay archivos válidos para cargar
+    // ============================================
+    // Si todos los archivos están fuera del límite de 10,
+    // renderizar inmediatamente con los slots expandidos
+    if (archivosRestantes === 0) {
+        renderizarGridImagenes();
+    }
+}
+
 // ========================================
 // INICIALIZACIÓN DE LA APLICACIÓN
 // ========================================
@@ -281,6 +399,8 @@ function cargarImagen(archivo, indice) {
 function inicializarApp() {
     inicializarNavegacion();
     inicializarControlesCantidad();
+    inicializarControlesEstilo();
+    inicializarDragAndDropGlobal();
     renderizarGridImagenes();
 }
 
@@ -292,4 +412,190 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inicializarApp);
 } else {
     inicializarApp();
+}
+
+// ========================================
+// FUNCIONES DE CONTROL DE ESTILOS
+// ========================================
+
+/**
+ * Inicializa todos los controles de la sección Style
+ */
+function inicializarControlesEstilo() {
+    // Radio buttons - Tipo de transición
+    elementos.radiosTipoTransicion.forEach(radio => {
+        radio.addEventListener('change', (evento) => {
+            estado.estilos.tipoTransicion = evento.target.value;
+            console.log('Tipo de transición:', estado.estilos.tipoTransicion);
+        });
+    });
+
+    // Slider - Velocidad de transición
+    elementos.sliderVelocidad.addEventListener('input', (evento) => {
+        const valor = evento.target.value;
+        estado.estilos.velocidadTransicion = parseInt(valor);
+        elementos.labelVelocidad.textContent = `${valor}ms`;
+    });
+
+    // Color picker
+    elementos.inputColorFondo.addEventListener('input', (evento) => {
+        const color = evento.target.value;
+        estado.estilos.colorFondo = color;
+        elementos.inputColorHex.value = color;
+    });
+
+    // Input de color hexadecimal
+    elementos.inputColorHex.addEventListener('input', (evento) => {
+        let valor = evento.target.value;
+        if (valor.startsWith('#') && (valor.length === 7 || valor.length === 4)) {
+            estado.estilos.colorFondo = valor;
+            elementos.inputColorFondo.value = valor;
+        }
+    });
+
+    // Switch - Autoplay
+    elementos.checkboxAutoplay.addEventListener('change', (evento) => {
+        estado.estilos.autoplay = evento.target.checked;
+        toggleGrupoIntervalo(evento.target.checked);
+    });
+
+    // Slider - Intervalo de autoplay
+    elementos.sliderIntervalo.addEventListener('input', (evento) => {
+        const valor = evento.target.value;
+        estado.estilos.intervaloAutoplay = parseInt(valor);
+        elementos.labelIntervalo.textContent = `${valor / 1000}s`;
+    });
+
+    // Checkbox - Mostrar flechas
+    elementos.checkboxFlechas.addEventListener('change', (evento) => {
+        estado.estilos.mostrarFlechas = evento.target.checked;
+    });
+
+    // Checkbox - Mostrar dots
+    elementos.checkboxDots.addEventListener('change', (evento) => {
+        estado.estilos.mostrarDots = evento.target.checked;
+    });
+}
+
+/**
+ * Muestra u oculta el grupo de intervalo según el estado de autoplay
+ * @param {boolean} mostrar - Si debe mostrar el grupo
+ */
+function toggleGrupoIntervalo(mostrar) {
+    elementos.grupoIntervalo.style.display = mostrar ? 'block' : 'none';
+}
+
+// ========================================
+// DRAG AND DROP GLOBAL
+// ========================================
+
+/**
+ * Inicializa el sistema de drag and drop global
+ * 
+ * COMPORTAMIENTO:
+ * - Previene que el navegador abra imágenes en nuevas pestañas
+ * - Muestra overlay visual solo cuando se arrastran archivos sobre el área válida
+ * - Al soltar múltiples imágenes, siempre las distribuye desde el primer slot vacío
+ * 
+ * PROBLEMAS RESUELTOS:
+ * 1. Feedback visual: El overlay aparece al detectar drag sobre el área de contenido
+ * 2. Prevención de apertura: preventDefault en todo el documento
+ * 3. Distribución correcta: Usa encontrarPrimerSlotVacio() para ubicar imágenes
+ */
+function inicializarDragAndDropGlobal() {
+    let contadorDrag = 0;
+
+    // ============================================
+    // PASO 1: Prevenir comportamiento por defecto del navegador
+    // ============================================
+    // Esto evita que el navegador abra las imágenes en nuevas pestañas
+    // cuando se sueltan fuera de los slots válidos
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // ============================================
+    // PASO 2: Mostrar overlay al arrastrar sobre área válida
+    // ============================================
+    // El overlay solo aparece cuando se arrastra sobre el contentArea
+    // y solo si estamos en la sección de imágenes
+    elementos.contentArea.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        contadorDrag++;
+        
+        // Verificar que estamos en la sección de imágenes
+        const seccionActiva = document.querySelector('.contentSection.active');
+        if (seccionActiva && seccionActiva.id === 'imagenesSeccion') {
+            elementos.dropOverlay.classList.add('active');
+        }
+    });
+
+    // ============================================
+    // PASO 3: Ocultar overlay al salir del área
+    // ============================================
+    // Usamos un contador para manejar múltiples dragenter/dragleave
+    // (pueden dispararse múltiples veces por elementos hijos)
+    elementos.contentArea.addEventListener('dragleave', (e) => {
+        contadorDrag--;
+        if (contadorDrag === 0) {
+            elementos.dropOverlay.classList.remove('active');
+        }
+    });
+
+    elementos.contentArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    // ============================================
+    // PASO 4: Procesar imágenes al soltar
+    // ============================================
+    // COMPORTAMIENTO CLAVE:
+    // - Las imágenes SIEMPRE se cargan desde el primer slot vacío
+    // - No importa dónde el usuario suelte las imágenes
+    // - Esto mantiene el orden lógico y evita gaps innecesarios
+    elementos.contentArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        contadorDrag = 0;
+        elementos.dropOverlay.classList.remove('active');
+
+        // Solo procesar si estamos en la sección de imágenes
+        const seccionActiva = document.querySelector('.contentSection.active');
+        if (seccionActiva && seccionActiva.id === 'imagenesSeccion') {
+            const archivos = Array.from(e.dataTransfer.files);
+            const archivosImagen = archivos.filter(archivo => archivo.type.startsWith('image/'));
+            
+            if (archivosImagen.length > 0) {
+                // IMPORTANTE: Siempre buscar el primer slot vacío
+                // Esto garantiza que las imágenes se distribuyan correctamente
+                const primerSlotVacio = encontrarPrimerSlotVacio();
+                cargarMultiplesImagenes(archivosImagen, primerSlotVacio);
+            }
+        }
+    });
+}
+
+/**
+ * Encuentra el índice del primer slot vacío en el grid de imágenes
+ * 
+ * PROPÓSITO:
+ * Esta función garantiza que al soltar múltiples imágenes,
+ * se carguen desde el primer espacio disponible, manteniendo
+ * un orden lógico y evitando gaps innecesarios
+ * 
+ * @returns {number} - Índice del primer slot vacío (0-9), o cantidadFotos si todos están llenos
+ */
+function encontrarPrimerSlotVacio() {
+    for (let i = 0; i < estado.cantidadFotos; i++) {
+        if (!estado.imagenes[i]) {
+            return i;
+        }
+    }
+    // Si todos los slots están llenos, retornar la cantidad actual
+    // (esto permitirá expandir si es necesario)
+    return estado.cantidadFotos;
 }

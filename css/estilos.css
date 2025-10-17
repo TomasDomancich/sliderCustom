@@ -154,6 +154,58 @@ header {
     flex: 1;
     padding: 40px 60px;
     background-color: #181818;
+    position: relative; /* Para el overlay de drop */
+}
+
+/* Overlay de Drag and Drop */
+.dropOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(24, 24, 24, 0.95);
+    border: 3px dashed #5a9e9e;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.dropOverlay.active {
+    display: flex;
+}
+
+.dropOverlayContent {
+    text-align: center;
+}
+
+.dropOverlayIcon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: bounceIcon 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes bounceIcon {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+.dropOverlayText {
+    font-size: 28px;
+    color: #5a9e9e;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.dropOverlaySubtext {
+    font-size: 16px;
+    color: #888;
 }
 
 .contentSection {
@@ -301,4 +353,255 @@ input[type="file"] {
     text-align: center;
     color: #666;
     font-style: italic;
+}
+
+/* ========================================
+   FORMULARIO DE CONFIGURACIÓN
+========================================= */
+.formGroup {
+    margin-bottom: 35px;
+}
+
+.formLabel {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #e7e7e7;
+}
+
+/* ========================================
+   RADIO BUTTONS PERSONALIZADOS
+========================================= */
+.radioGroup {
+    display: flex;
+    gap: 25px;
+}
+
+.radioOption {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.radioOption input[type="radio"] {
+    display: none;
+}
+
+.radioCustom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #5a9e9e;
+    border-radius: 50%;
+    margin-right: 10px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.radioCustom::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #5a9e9e;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.3s;
+}
+
+.radioOption input[type="radio"]:checked + .radioCustom::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.radioText {
+    font-size: 15px;
+    color: #b0b0b0;
+}
+
+/* ========================================
+   SLIDER (RANGE INPUT)
+========================================= */
+.sliderGroup {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sliderGroup input[type="range"] {
+    flex: 1;
+    height: 6px;
+    background: #2a2a2a;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.sliderGroup input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #5a9e9e;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.sliderGroup input[type="range"]::-webkit-slider-thumb:hover {
+    background: #6ab5b5;
+}
+
+.sliderGroup input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #5a9e9e;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+    transition: background 0.3s;
+}
+
+.sliderGroup input[type="range"]::-moz-range-thumb:hover {
+    background: #6ab5b5;
+}
+
+.sliderGroup span {
+    min-width: 60px;
+    text-align: center;
+    color: #5a9e9e;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* ========================================
+   COLOR PICKER
+========================================= */
+.colorGroup {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.colorGroup input[type="color"] {
+    width: 60px;
+    height: 40px;
+    border: 2px solid #3a3a3a;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.colorGroup input[type="text"] {
+    width: 120px;
+    padding: 8px 12px;
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    color: white;
+    font-size: 14px;
+    font-family: monospace;
+    border-radius: 4px;
+}
+
+/* ========================================
+   SWITCH (TOGGLE)
+========================================= */
+.switchContainer {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switchContainer input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switchSlider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #2a2a2a;
+    transition: 0.4s;
+    border-radius: 26px;
+}
+
+.switchSlider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #666;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.switchContainer input:checked + .switchSlider {
+    background-color: #5a9e9e;
+}
+
+.switchContainer input:checked + .switchSlider::before {
+    transform: translateX(24px);
+    background-color: white;
+}
+
+/* ========================================
+   CHECKBOXES PERSONALIZADOS
+========================================= */
+.checkboxGroup {
+    display: flex;
+    gap: 25px;
+}
+
+.checkboxOption {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkboxOption input[type="checkbox"] {
+    display: none;
+}
+
+.checkboxCustom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #5a9e9e;
+    border-radius: 3px;
+    margin-right: 10px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.checkboxCustom::after {
+    content: '✓';
+    position: absolute;
+    color: #5a9e9e;
+    font-size: 16px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.3s;
+}
+
+.checkboxOption input[type="checkbox"]:checked + .checkboxCustom {
+    background-color: #5a9e9e;
+}
+
+.checkboxOption input[type="checkbox"]:checked + .checkboxCustom::after {
+    transform: translate(-50%, -50%) scale(1);
+    color: white;
+}
+
+.checkboxText {
+    font-size: 15px;
+    color: #b0b0b0;
 }

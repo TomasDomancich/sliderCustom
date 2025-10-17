@@ -54,7 +54,16 @@
             </aside>
 
             <!-- ÁREA DE CONTENIDO -->
-            <main class="contentArea">
+            <main class="contentArea" id="contentArea">
+                <!-- OVERLAY DE DRAG AND DROP -->
+                <div class="dropOverlay" id="dropOverlay">
+                    <div class="dropOverlayContent">
+                        <div class="dropOverlayIcon">📁</div>
+                        <div class="dropOverlayText">Drop images here</div>
+                        <div class="dropOverlaySubtext">Multiple images will fill available slots</div>
+                    </div>
+                </div>
+
                 <!-- SECCIÓN: IMÁGENES -->
                 <section id="imagenesSeccion" class="contentSection active">
                     <h2 class="sectionTitle">Images</h2>
@@ -78,8 +87,80 @@
                 <!-- SECCIÓN: ESTILO -->
                 <section id="estiloSeccion" class="contentSection">
                     <h2 class="sectionTitle">Style</h2>
-                    <div class="placeholderContent">
-                        Style configuration coming in next step...
+                    
+                    <!-- Tipo de Transición -->
+                    <div class="formGroup">
+                        <label class="formLabel">Transition Type:</label>
+                        <div class="radioGroup">
+                            <label class="radioOption">
+                                <input type="radio" name="tipoTransicion" value="fade" checked>
+                                <span class="radioCustom"></span>
+                                <span class="radioText">Fade</span>
+                            </label>
+                            <label class="radioOption">
+                                <input type="radio" name="tipoTransicion" value="slide">
+                                <span class="radioCustom"></span>
+                                <span class="radioText">Slide</span>
+                            </label>
+                            <label class="radioOption">
+                                <input type="radio" name="tipoTransicion" value="zoom">
+                                <span class="radioCustom"></span>
+                                <span class="radioText">Zoom</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Velocidad de Transición -->
+                    <div class="formGroup">
+                        <label class="formLabel">Transition Speed:</label>
+                        <div class="sliderGroup">
+                            <input type="range" id="velocidadTransicion" min="300" max="2000" value="800" step="100">
+                            <span id="velocidadValor">800ms</span>
+                        </div>
+                    </div>
+
+                    <!-- Color de Fondo -->
+                    <div class="formGroup">
+                        <label class="formLabel">Background Color:</label>
+                        <div class="colorGroup">
+                            <input type="color" id="colorFondo" value="#000000">
+                            <input type="text" id="colorFondoHex" value="#000000" maxlength="7">
+                        </div>
+                    </div>
+
+                    <!-- Autoplay -->
+                    <div class="formGroup">
+                        <label class="formLabel">Autoplay:</label>
+                        <label class="switchContainer">
+                            <input type="checkbox" id="autoplay" checked>
+                            <span class="switchSlider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Intervalo de Autoplay -->
+                    <div class="formGroup" id="grupoIntervalo">
+                        <label class="formLabel">Autoplay Interval:</label>
+                        <div class="sliderGroup">
+                            <input type="range" id="intervaloAutoplay" min="1000" max="10000" value="3000" step="500">
+                            <span id="intervaloValor">3s</span>
+                        </div>
+                    </div>
+
+                    <!-- Mostrar Controles -->
+                    <div class="formGroup">
+                        <label class="formLabel">Show Controls:</label>
+                        <div class="checkboxGroup">
+                            <label class="checkboxOption">
+                                <input type="checkbox" id="mostrarFlechas" checked>
+                                <span class="checkboxCustom"></span>
+                                <span class="checkboxText">Arrows</span>
+                            </label>
+                            <label class="checkboxOption">
+                                <input type="checkbox" id="mostrarDots" checked>
+                                <span class="checkboxCustom"></span>
+                                <span class="checkboxText">Dots</span>
+                            </label>
+                        </div>
                     </div>
                 </section>
 
